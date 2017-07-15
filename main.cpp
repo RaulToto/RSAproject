@@ -1,8 +1,7 @@
-#include <QCoreApplication>
-
-int main(int argc, char *argv[])
+#include <iostream>
+#include "primalitytest.h"
+#include "randomgeneration.h"
+int main()
 {
-    QCoreApplication a(argc, argv);
 
-    return a.exec();
 }
