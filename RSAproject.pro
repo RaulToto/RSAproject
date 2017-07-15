@@ -18,3 +18,10 @@ HEADERS += \
     rsa.h \
     primalitytest.h \
     randomgeneration.h
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../../usr/lib/release/ -lntl
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../../usr/lib/debug/ -lntl
+else:unix: LIBS += -L$$PWD/../../../../../usr/lib/ -lntl
+
+INCLUDEPATH += $$PWD/../../../../../usr/include
+DEPENDPATH += $$PWD/../../../../../usr/include
