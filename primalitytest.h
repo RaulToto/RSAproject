@@ -1,6 +1,9 @@
 #ifndef PRIMALITYTEST_H
 #define PRIMALITYTEST_H
-
+#include <NTL/ZZ.h>
+#include <iostream>
+using namespace NTL;
+using namespace std;
 
 class PrimalityTest
 {
