@@ -23,80 +23,69 @@ ZZ PrimalityTest::module(ZZ x, ZZ y)
 
 }
 
-ZZ PrimalityTest::power(ZZ x, ZZ y, ZZ p)
+ZZ PrimalityTest::mulmod(ZZ a, ZZ b, ZZ mod)
 {
-    ZZ res = conv<ZZ>(1);      // Initialize result
-       x = module(x,p);  // Update x if it is more than or
-                   // equal to p
-       while (y > 0)
-       {
-           // If y is odd, multiply x with result
-
-           ZZ oper;
-           ZZ one;
-           one =1;
-           NTL::bit_and(oper,y,one);
-           //cout << oper ;
-           if(conv<int>(oper))
-               res = module((res*x) , p);
-
-           // y must be even now
-           y = y>>1; // y = y/2
-           x = module((x*x) , p);
-       }
-       return res;
-}
-
-bool PrimalityTest::miillerTest(ZZ d, ZZ n)
-{
-    // Pick a random number in [2..n-2]
-    // Corner cases make sure that n > 4
-    ZZ a = module((conv<ZZ>(2 + rand())) , (n - 4));
-
-    // Compute a^d % n
-    ZZ x = power(a, d, n);
-    if (x == 1  || x == n-1)
-       return true;
-
-    // Keep squaring x while one of the following doesn't
-    // happen
-    // (i)   d does not reach n-1
-    // (ii)  (x^2) % n is not 1
-    // (iii) (x^2) % n is not n-1
-    while (d != n-1)
+    ZZ x = conv<ZZ>(0),y =conv<ZZ>(module(a , mod));
+    while (b > 0)
     {
-        x = module((x * x) , n);
-        d *= 2;
-
-        if (x == 1)      return false;
-        if (x == n-1)    return true;
+        if (module(b,conv<ZZ>(2)) == 1)
+        {
+            x = module((x + y), mod);
+        }
+        y = module((y * 2) , mod);
+        //b /= 2;//corregir
+        b=b>>1;
     }
-
-    // Return composite
-    return false;
+    return module(x , mod);
 }
 
-
-bool PrimalityTest::isPrime(ZZ n, ZZ k)
+ZZ PrimalityTest::modulo(ZZ base, ZZ exponent, ZZ mod)
 {
-    // Corner cases
-       if (n <= 1 || n == 4)  return false;
-       if (n <= 3) return true;
+    ZZ x = conv<ZZ>(1);
+    ZZ y = base;
+    while (exponent > 0)
+    {
+        if (module(exponent , conv<ZZ>(2)) == 1)
+            x =module( (x * y) , mod);
+        y = module((y * y) , mod);
+        //exponent = exponent / 2;
+        exponent=exponent>>1;
+    }
+    return module(x , mod);
 
-       // Find r such that n = 2^d * r + 1 for some r >= 1
-       ZZ d = n - 1;
-       while (module(d , conv<ZZ>(2)) == 0)
-           d /= 2;
-
-       // Iterate given nber of 'k' times
-       for (ZZ i =conv<ZZ>(0); i < k; i++)
-            if (miillerTest(d, n) == false)
-                 return false;
-
-       return true;
 }
 
-PrimalityTest::~PrimalityTest()
+bool PrimalityTest::Miller(ZZ p, int iteration)
 {
+    if (p < 2)
+    {
+        return false;
+    }
+    if (p != 2 && module(p ,conv<ZZ>(2))==0)
+    {
+        return false;
+    }
+    ZZ s = p - 1;
+    while (module(s ,conv<ZZ> (2)) == 0)
+    {
+        //s /= 2;
+        s=s>>1;
+    }
+    for (int i = 0; i < iteration; i++)
+    {
+        ZZ a = module(conv<ZZ>(rand()) , (p - 1)) + 1;
+        ZZ temp = s;
+        ZZ mod = modulo(a, temp, p);
+        while (temp != p - 1 && mod != 1 && mod != p - 1)
+        {
+            mod = mulmod(mod, mod, p);
+            temp *= 2;
+        }
+        if (mod != p - 1 && module(temp ,conv<ZZ>(2)) == 0)
+        {
+            return false;
+        }
+    }
+    return true;
 
 }

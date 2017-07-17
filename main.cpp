@@ -6,7 +6,12 @@ using namespace NTL;
 using namespace std;
 int main()
 {
-    ZZ a,b;
-    a=3;
-    cout << a << endl;
+    cout << "  ///////////////////" << endl;
+    cout << " /////////RSA///////" << endl;
+    cout <<"///////////////////"  << endl;
+    PrimalityTest primo;
+    for (ZZ i= conv<ZZ>(1); i <100l;i++) {
+        if(primo.Miller(i,5))
+            cout << i << " " ;
+    }
 }

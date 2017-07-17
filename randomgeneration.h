@@ -4,7 +4,6 @@
 #include <NTL/ZZ.h>
 using namespace NTL;
 using namespace std;
-
 class RandomGeneration
 {
 public:
