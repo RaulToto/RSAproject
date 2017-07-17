@@ -2,6 +2,7 @@
 #include <NTL/ZZ.h>
 #include "primalitytest.h"
 #include "randomgeneration.h"
+#include "rsa.h"
 using namespace NTL;
 using namespace std;
 int main()
@@ -10,8 +11,8 @@ int main()
     cout << " /////////RSA///////" << endl;
     cout <<"///////////////////"  << endl;
     PrimalityTest primo;
-    for (ZZ i= conv<ZZ>(1); i <100l;i++) {
-        if(primo.Miller(i,5))
-            cout << i << " " ;
-    }
+    RandomGeneration random;
+    RSA rsa(1024);
+    rsa.encrypt("hola");
+
 }

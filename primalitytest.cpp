@@ -1,5 +1,5 @@
 #include "primalitytest.h"
-
+#include <bitset>
 PrimalityTest::PrimalityTest()
 {
 
