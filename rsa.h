@@ -2,6 +2,9 @@
 #define RSA_H
 #include "randomgeneration.h"
 #include "primalitytest.h"
+#include <vector>
+#include <string>
+#include <sstream>
 #include <NTL/ZZ.h>
 #include <algorithm>
 using namespace NTL;
@@ -12,6 +15,8 @@ public:
     RSA(int);
     RSA(ZZ,ZZ);
     ZZ module(ZZ,ZZ);
+    string intToString(int);
+    int stringToInt(string);
     int size_number(ZZ);
     string encrypt(string );
     string decrypt(string );
