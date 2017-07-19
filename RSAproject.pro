@@ -12,14 +12,13 @@ TEMPLATE = app
 SOURCES += main.cpp \
     rsa.cpp \
     primalitytest.cpp \
-    randomgeneration.cpp \
-    bitvector.cpp
+    randomgenerator.cpp
 
 HEADERS += \
     rsa.h \
     primalitytest.h \
-    randomgeneration.h \
-    bitvector.h
+    bitvector.h \
+    randomgenerator.h
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../../usr/lib/release/ -lntl
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../../usr/lib/debug/ -lntl

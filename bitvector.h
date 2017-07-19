@@ -1,32 +1,79 @@
 #ifndef BITVECTOR_H
 #define BITVECTOR_H
-
+#include <bits/stdc++.h>
+#include <iostream>
+#include <NTL/ZZ.h>
+#include <time.h>
+#include <stdbool.h>
+using namespace std;
+using namespace NTL;
 class BitVector
 {
-private:
-    int m_len;
-    bool* m_vec;
+    public:
+        BitVector(int x) {
+            if(x%8==0){
+                vector=new unsigned char[x/8];
+                tam=x/8;
+            }
+            else{
+                vector=new unsigned char[(x/8)+1];
+                tam=(x/8)+1;
+            }
 
-public:
-    // c'tors / d'tor
-    BitVector();
-    BitVector(int len);
-    BitVector(const BitVector&);
-    ~BitVector();
+            for(int i=0;i<tam;i++)
+            {
+                vector[i]=0;
+            }
+        }
+        virtual ~BitVector() {
 
-    // public interface
-    BitVector Extended();
+            delete [] vector;
+        }
 
-    // getter
-    int Length () const { return m_len; }
+        void SetBit(int pos, bool def);
+        bool getBit(int pos);
+        void ShowRow();
+    //protected:
+    //private:
 
-    // public operators
-    BitVector& operator= (const BitVector&);
-    bool& operator[] (int);
-    const bool& operator[](int) const;
-
-    // output
-    friend ostream& operator<< (ostream&, const BitVector&);
+        unsigned char * vector;
+        int tam;
 };
 
+void BitVector::SetBit(int pos, bool def)
+{
+    int part=pos/8;
+    int pos_part=pos%8;
+    unsigned char adolfo=1<<pos_part;
+
+    if(def)
+    {
+        vector[part]=vector[part]|adolfo;
+    }
+    else
+    {
+        int tmp= ~adolfo;
+        vector[part]=vector[part]&tmp;
+    }
+
+}
+
+bool BitVector::getBit(int pos)
+{
+
+    int part=pos/8;
+    int pos_part=pos%8;
+    unsigned char adolfo=1<<pos_part;
+    return (vector[part]&adolfo);
+
+}
+
+void BitVector::ShowRow()
+{
+    for(int i=0;i<tam;i++)
+    {
+        cout<<(int)vector[i]<<endl;
+    }
+    cout<<endl;
+}
 #endif // BITVECTOR_H

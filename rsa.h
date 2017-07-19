@@ -1,25 +1,33 @@
 #ifndef RSA_H
 #define RSA_H
-#include "randomgeneration.h"
+#include "randomgenerator.h"
 #include "primalitytest.h"
 #include <vector>
 #include <string>
 #include <sstream>
 #include <NTL/ZZ.h>
 #include <algorithm>
+#include <fstream>
 using namespace NTL;
 using namespace std;
 class RSA
 {
 public:
     RSA(int);
-    RSA(ZZ,ZZ);
+    //other functions
+    ZZ binary_gcd(ZZ,ZZ);
+    ZZ euclides_extendido(ZZ,ZZ);
     ZZ module(ZZ,ZZ);
-    string intToString(int);
-    int stringToInt(string);
+    string stringConvertInBlocks(vector<string> &,int);
+    vector<ZZ> numberConvertInBlocks(string &,int);
+    string intToString(ZZ);
+    ZZ stringToInt(string);
     int size_number(ZZ);
+    ZZ expModule(ZZ,ZZ,ZZ);
+    //main functions
     string encrypt(string );
-    string decrypt(string );
+    void decrypt();
+
 
 private:
     int size;
@@ -28,6 +36,8 @@ private:
     ZZ N;//n
     ZZ p;//primos p y q
     ZZ q;//primos p y q
+    ZZ phi_n;
+    string encriptado;
     string alfabeto="abcdefghijklmnopqrstuvwxyz#";
 };
 
