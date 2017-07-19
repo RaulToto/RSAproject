@@ -3,20 +3,20 @@
 #include "primalitytest.h"
 #include "randomgenerator.h"
 #include "rsa.h"
+#include "gamal.h"
 using namespace NTL;
 using namespace std;
-int main(int argc,int argv[])
+int main()
 {
+    /*
     cout << "  ///////////////////" << endl;
     cout << " /////////RSA///////" << endl;
     cout <<"///////////////////"  << endl;
-    //PrimalityTest primo;
-    //RandomGenerator random;
-    //random.SeedXorShift();
-    //random.SeedBBS();
-    //cout << random.BlumBlumShub(12000) << endl;
     RSA rsa(1024);
-    rsa.encrypt("comehere#");
-    cout << "el desifrado es" << endl;
-    rsa.decrypt();
+    string message="the#rsa#algorithm";
+    cout << "EL CIFRADO DE LA PALABRA  " << message << " ES :" << rsa.encrypt(message) << endl;
+    cout << "EL DESIFRADO ES " ;
+    rsa.decrypt();*/
+    cout << "ELGAMAL" << endl;
+    gamal gam(1024);
 }

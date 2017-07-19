@@ -13,6 +13,7 @@ using namespace std;
 class RSA
 {
 public:
+    RSA();
     RSA(int);
     //other functions
     ZZ binary_gcd(ZZ,ZZ);

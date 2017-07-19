@@ -1,6 +1,11 @@
 #include "rsa.h"
 #include <string>
 using namespace std;
+RSA::RSA()
+{
+
+}
+
 RSA::RSA(int x)
     :size(x)
 {
@@ -13,7 +18,7 @@ RSA::RSA(int x)
     //cout << random.BlumBlumShub(512) << endl;
     //se encuentra p y q dos primos grandes ambos del tamaño
     num=random.BlumBlumShub(this->size);
-    cout << num << endl;
+    //cout << num << endl;
     for (ZZ i=num; ; i+=2) {
         if(primo.Miller(i,5))
         {
@@ -23,7 +28,7 @@ RSA::RSA(int x)
     }
     random.SeedBBS();
     num=random.BlumBlumShub(this->size);
-    cout << "num2--->" << num << endl;
+    //cout << "num2--->" << num << endl;
     for (ZZ i=num; ; i+=2) {
         if(primo.Miller(i,5))
         {
@@ -32,11 +37,11 @@ RSA::RSA(int x)
         }
     }
     //cout << "primo" << prime << endl;
-    cout << "q-->" <<this->q << endl;
-    cout << "p-->" << this->p << endl;
+    //cout << "q-->" <<this->q << endl;
+    //cout << "p-->" << this->p << endl;
 
     this->N=p*q;//se calcula n a partir de la multiplicacion de estos dos primos
-    cout << "n-->" <<this->N << endl;
+    //cout << "n-->" <<this->N << endl;
     this->phi_n=(p-1)*(q-1);//se calcula phi de n p-1*q-1
     while(!(binary_gcd(e,phi_n)==1))//se calcula la clave publica
     {
@@ -48,20 +53,18 @@ RSA::RSA(int x)
             this->e=random.BlumBlumShub(255);
         }
     }
-    cout << "e--->" << this->e << endl;
-    this->d=inverse(e,phi_n);
-    cout << "d--->" << this->d << endl;
-    //hallaremos nuestra clave publica
-    /*random.BBS(1024);
-    this->p=17;
-    this->q=59;
-    this->N=1003;
-    ZZ phi_n=(p-1)*(q-1);
-    this->e=3;
-    this->d=619;*/
+    //cout << "e--->" << this->e << endl;
+    this->d=inverse(e,phi_n);//hallamos la clave privada
+    //cout << "PRIMO Q--->" <<this->q << endl;
+    //cout << "PRIMO P--->" << this->p << endl;
+    //cout << "N=P*Q --->" <<this->N << endl;
+
+    //cout << "CLAVE PUBLICA E--->" << this->e << endl;
+    //cout << "CLAVE PRIVADA D--->" << this->d << endl;
+
 }
 
-ZZ RSA::binary_gcd(ZZ u , ZZ v)
+ZZ RSA::binary_gcd(ZZ u , ZZ v)//funcion que nos servira para hallar em MCD(a,b)
 {
     int i;
     if (u == 0) return v;
@@ -89,7 +92,7 @@ ZZ RSA::binary_gcd(ZZ u , ZZ v)
     //cout << "---- " << i << endl;
     return u << i;
 }
-ZZ RSA::inverse(ZZ n, ZZ modulus)
+ZZ RSA::inverse(ZZ n, ZZ modulus)//funcion que nos servira para hallar el inverso modular
 {
     ZZ a = n, b = modulus;
     ZZ x = conv<ZZ>(0), y = conv<ZZ>(1), x0 = conv<ZZ>(1), y0 =conv<ZZ>(0), q, temp;
@@ -105,7 +108,7 @@ ZZ RSA::inverse(ZZ n, ZZ modulus)
     return x0;
 }
 
-ZZ RSA::module(ZZ  x , ZZ  y)
+ZZ RSA::module(ZZ  x , ZZ  y)//funcion modulo
 {
     ZZ q=x/y,r;
     if(q<0)
@@ -125,20 +128,27 @@ ZZ RSA::module(ZZ  x , ZZ  y)
 string RSA::stringConvertInBlocks(vector<string> &vec, int size_numbers)//recibe como argumento el vector y el tamaño de cifras
 {
     string allpos;
-    for (int i = 0; i < vec.size(); ++i) {//si esta solo una cifra lo convierte a 2
-        string n=vec[i];
-        while(n.length()<size_numbers)
-        {
-            n='0'+n;
-            vec[i]=n;
+    if(vec.size()<size_numbers)
+    {
+        allpos=vec[0];
+    }
+    else
+    {
+        for (int i = 0; i < vec.size(); ++i) {//si esta solo una cifra lo convierte a 2
+            string n=vec[i];
+            while(n.length()<size_numbers)
+            {
+                n='0'+n;
+                vec[i]=n;
+            }
+            allpos+=vec[i];
+            //cout << allpos << endl;
         }
-        allpos+=vec[i];
-        //cout << allpos << endl;
     }
     return allpos;
 }
 
-vector<ZZ> RSA::numberConvertInBlocks(string & allpos, int k)
+vector<ZZ> RSA::numberConvertInBlocks(string & allpos, int k)//funcion que convierte a bloques de numeros
 {
     vector<ZZ> vec1;
     int cont=0,cont1=0,cont2=0;
@@ -166,7 +176,7 @@ vector<ZZ> RSA::numberConvertInBlocks(string & allpos, int k)
 }
 
 
-string RSA::intToString(ZZ number)
+string RSA::intToString(ZZ number)//funcion que convierte de ZZ a string
 {
     std::stringstream ss;
     ss << number;
@@ -175,7 +185,7 @@ string RSA::intToString(ZZ number)
     return str;
 }
 
-ZZ RSA::stringToInt(string number)
+ZZ RSA::stringToInt(string number)//funcion que convierte de string a ZZ
 {
     stringstream sstr;
     sstr << number;
@@ -184,7 +194,7 @@ ZZ RSA::stringToInt(string number)
     return converted;
 }
 //halla las cifras de un numero
-int RSA::size_number(ZZ num)
+int RSA::size_number(ZZ num)//esta funcion halla el tamaño de cifras de un numero
 {
     int cont=1;
     while (num/conv<ZZ>(10)>0) {
@@ -195,7 +205,7 @@ int RSA::size_number(ZZ num)
     return cont;
 }
 
-ZZ RSA::expModule(ZZ base , ZZ exponent, ZZ mod)
+ZZ RSA::expModule(ZZ base , ZZ exponent, ZZ mod)//funcion exponenciacion modular
 {
     ZZ x = conv<ZZ>(1);
     ZZ y = base;
@@ -211,7 +221,7 @@ ZZ RSA::expModule(ZZ base , ZZ exponent, ZZ mod)
 
 }
 
-string RSA::encrypt(string message)
+string RSA::encrypt(string message)//aqui se realiza la encriptacion
 {
     int k=size_number(this->N)-1;//el tamaño de los bloques sera cantidad de cifras de n-1
     vector<string> vec;//vector para almacenar las posiciones de las letras
@@ -220,37 +230,26 @@ string RSA::encrypt(string message)
     size_t t;
     for (int i = 0; i < message.size(); ++i) {
         size_t t=alfabeto.find(message[i]);
-        cout << t << endl;
+        //cout << t << endl;
         vec.push_back(intToString(conv<ZZ>(t)));
     }
     //cout << "convert in blocks" << endl;
     allpos=stringConvertInBlocks(vec,2);
-    cout << allpos << "k is "<< k <<  endl;
+    //cout << allpos << "k is "<< k <<  endl;
     vec1=numberConvertInBlocks(allpos,k);
     //cout << "vector in block";
-
-    cout << "this is a number for encrypt" << endl;
-    for (int i = 0; i < vec1.size(); ++i) {
-        cout << vec1[i] << endl;
-    }
-
     allpos="";//vaciar la lista de strings
-    cout << "encriptacion" << endl;
+    //cout << "encriptacion" << endl;
     vec.clear();//vacia el vector
     for (int i = 0; i < vec1.size(); ++i) {
         ZZ ss;
         ss=expModule(conv<ZZ>(vec1[i]),this->e,this->N);//exp modular con nuestra clave publica
         vec.push_back(intToString(ss));//lo almacenamos como string
     }
-    cout << "new vector" << endl;
-    for (int i = 0; i < vec.size(); ++i) {
-        cout << vec[i] << endl;
-    }
-
+    //cout << "new vector" << endl;
     allpos=stringConvertInBlocks(vec,k+1);//convierte el string en bloques y lo retorna como string
-
     this->encriptado=allpos;//inicializamos nuestro  encriptado
-    cout <<"final allpos"  << allpos << endl;
+    //cout <<"final allpos"  << allpos << endl;
     return allpos;
 }
 void RSA::decrypt()
@@ -260,25 +259,23 @@ void RSA::decrypt()
     vector<ZZ> vec1;//vector para ZZ
     vector<string> vec;//vector para strings
     string resultado;
-    cout << "encriptado" << this->encriptado << endl;
+    //cout << "encriptado" << this->encriptado << endl;
     vec1=numberConvertInBlocks(this->encriptado,k+1);//en el vector 1 estan todos los numeros en zz
-    cout << "1----" << vec1[0] << endl;
+    //cout << "1----" << vec1[0] << endl;
     for (int i = 0; i < vec1.size(); ++i) {//luego hacemos la exp mdular con nuestra clave privada
         ZZ ss;
-        cout << "conv[0]>>>" << vec1[i] << endl;
-        cout << "d--->" << this->d << endl;
-        cout << "N--->" << this->N<< endl;
         ss=expModule(conv<ZZ>(vec1[i]),this->d,this->N);//exp modular
-        cout << "SS-->"<<ss << endl;
+        //cout << "SS-->"<<ss << endl;
         vec.push_back(intToString(ss));//el resultado lo almacenamos en otro vecto
 
     }
-    resultado=stringConvertInBlocks(vec,k);//le el vector y el k-1
-
+    resultado=stringConvertInBlocks(vec,k);//lee el vector y el k-1
+    //cout << "la desincriptacion es  " << resultado << endl;
     vec1.clear();//limpia el vector
     vec1=numberConvertInBlocks(resultado,2);//convierte al tamaño maximo de cifras del alfabeto
     for (int i = 0; i < vec1.size(); ++i) {
         cout << alfabeto[conv<int>(vec1[i])];
+        //cout << "vec--->" << vec1[i] << endl;
     }
     cout << endl;
 }
