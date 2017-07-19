@@ -16,7 +16,7 @@ int main(int argc,int argv[])
     //random.SeedBBS();
     //cout << random.BlumBlumShub(12000) << endl;
     RSA rsa(1024);
-    //rsa.encrypt("comehere#");
-    //cout << "el desifrado es" << endl;
-    //rsa.decrypt();
+    rsa.encrypt("comehere#");
+    cout << "el desifrado es" << endl;
+    rsa.decrypt();
 }

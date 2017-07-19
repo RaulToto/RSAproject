@@ -9,12 +9,12 @@ RSA::RSA(int x)
     random.SeedXorShift();
     random.SeedBBS();
     //random.SeedXorShift();
-    ZZ prime,num;
+    ZZ num;
     //cout << random.BlumBlumShub(512) << endl;
     //se encuentra p y q dos primos grandes ambos del tamaño
     num=random.BlumBlumShub(this->size);
     cout << num << endl;
-    for (ZZ i=num; i < num+1001; i+=2) {
+    for (ZZ i=num; ; i+=2) {
         if(primo.Miller(i,5))
         {
             this->p=i;
@@ -23,7 +23,8 @@ RSA::RSA(int x)
     }
     random.SeedBBS();
     num=random.BlumBlumShub(this->size);
-    for (ZZ i=num; i < num+1001; i+=2) {
+    cout << "num2--->" << num << endl;
+    for (ZZ i=num; ; i+=2) {
         if(primo.Miller(i,5))
         {
             this->q=i;
@@ -33,16 +34,22 @@ RSA::RSA(int x)
     //cout << "primo" << prime << endl;
     cout << "q-->" <<this->q << endl;
     cout << "p-->" << this->p << endl;
-    /*
+
     this->N=p*q;//se calcula n a partir de la multiplicacion de estos dos primos
     cout << "n-->" <<this->N << endl;
     this->phi_n=(p-1)*(q-1);//se calcula phi de n p-1*q-1
-    while(!(binary_gcd(e,phi_n)==1))
+    while(!(binary_gcd(e,phi_n)==1))//se calcula la clave publica
     {
+        random.SeedBBS();
         this->e=random.BlumBlumShub(255);
+        while(e==1)
+        {
+            random.SeedBBS();
+            this->e=random.BlumBlumShub(255);
+        }
     }
     cout << "e--->" << this->e << endl;
-    this->d=euclides_extendido(e,phi_n);
+    this->d=inverse(e,phi_n);
     cout << "d--->" << this->d << endl;
     //hallaremos nuestra clave publica
     /*random.BBS(1024);
@@ -82,32 +89,20 @@ ZZ RSA::binary_gcd(ZZ u , ZZ v)
     //cout << "---- " << i << endl;
     return u << i;
 }
-
-ZZ RSA::euclides_extendido(ZZ a, ZZ b)
+ZZ RSA::inverse(ZZ n, ZZ modulus)
 {
-
-    ZZ q,r,r1=a,r2=b,s,s1,s2,t,t1,t2;
-    s1=1,s2=0,t,t1=0,t2=1;
-    //cout << "q" << "\t"<<"r1 "<< "\t" << "r2 "<< "\t" << "r "<< "\t" << "s1 "<< "\t" << "s2 "<< "\t" << "s "<< "\t" << "t1" << "\t"<< "t2 " << "\t"<< "t " << endl;
-    while(r2>0)
-    {
-        q=r1/r2;
-        r=r1-(q*r2);
-        r1=r2;
-        r2=r;
-        //-----
-        s=s1-(q*s2);
-        s1=s2;
-        s2=s;
-        //cout << s << "\t" << s1 << "\t" << s2 << endl;
-        //-------
-        t=t1-(q*t2);
-        t1=t2;
-        t2=t;
-        //guardar(q,r1,r2,r,s1,s2,s,t1,t2,t);
-        //cout << q << "\t" << r1<< "\t" << r2<< "\t" << r<< "\t" << s1<< "\t" << s2<< "\t" << s<< "\t" <<t1<< "\t" <<t2<< "\t" << t << endl;
+    ZZ a = n, b = modulus;
+    ZZ x = conv<ZZ>(0), y = conv<ZZ>(1), x0 = conv<ZZ>(1), y0 =conv<ZZ>(0), q, temp;
+    while(b != 0) {
+        q = a / b;
+        temp = module(a , b);
+        a = b;
+        b = temp;
+        temp = x; x = x0 - q * x; x0 = temp;
+        temp = y; y = y0 - q * y; y0 = temp;
     }
-    return s1;
+    if(x0 < 0) x0 += modulus;
+    return x0;
 }
 
 ZZ RSA::module(ZZ  x , ZZ  y)
@@ -278,12 +273,12 @@ void RSA::decrypt()
         vec.push_back(intToString(ss));//el resultado lo almacenamos en otro vecto
 
     }
-    //resultado=stringConvertInBlocks(vec,k);//le el vector y el k-1
-    /*
+    resultado=stringConvertInBlocks(vec,k);//le el vector y el k-1
+
     vec1.clear();//limpia el vector
     vec1=numberConvertInBlocks(resultado,2);//convierte al tamaño maximo de cifras del alfabeto
     for (int i = 0; i < vec1.size(); ++i) {
         cout << alfabeto[conv<int>(vec1[i])];
     }
-    cout << endl;*/
+    cout << endl;
 }

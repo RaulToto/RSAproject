@@ -16,7 +16,7 @@ public:
     RSA(int);
     //other functions
     ZZ binary_gcd(ZZ,ZZ);
-    ZZ euclides_extendido(ZZ,ZZ);
+    ZZ inverse(ZZ,ZZ);//for e^-1modn
     ZZ module(ZZ,ZZ);
     string stringConvertInBlocks(vector<string> &,int);
     vector<ZZ> numberConvertInBlocks(string &,int);
